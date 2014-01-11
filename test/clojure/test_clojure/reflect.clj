@@ -25,7 +25,7 @@
 
 (deftest field-descriptor->class-symbol-test
   (are [s d] (= s (@#'reflect/field-descriptor->class-symbol d))
-       'clojure.asm.Type<><> "[[Lclojure/asm/Type;"
+       'org.objectweb.asm.Type<><> "[[Lclojure/asm/Type;"
        'int "I"
        'java.lang.Object "Ljava.lang.Object;"))
 

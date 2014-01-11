@@ -11,9 +11,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;; proxy ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (import
- '(clojure.asm ClassWriter ClassVisitor Opcodes Type) 
+ '(org.objectweb.asm ClassWriter ClassVisitor Opcodes Type)
  '(java.lang.reflect Modifier Constructor)
- '(clojure.asm.commons Method GeneratorAdapter)
+ '(org.objectweb.asm.commons Method GeneratorAdapter)
  '(clojure.lang IProxy Reflector DynamicClassLoader IPersistentMap PersistentHashMap RT))
 
 (defn method-sig [^java.lang.reflect.Method meth]

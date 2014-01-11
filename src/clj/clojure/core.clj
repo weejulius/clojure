@@ -4919,10 +4919,10 @@
                    (.getAnnotation c java.lang.annotation.Retention)] 
           (= (.value r) java.lang.annotation.RetentionPolicy/RUNTIME)))))
 
-(defn- descriptor [^Class c] (clojure.asm.Type/getDescriptor c))
+(defn- descriptor [^Class c] (org.objectweb.asm.Type/getDescriptor c))
 
 (declare process-annotation)
-(defn- add-annotation [^clojure.asm.AnnotationVisitor av name v]
+(defn- add-annotation [^org.objectweb.asm.AnnotationVisitor av name v]
   (cond
    (vector? v) (let [avec (.visitArray av name)]
                  (doseq [vval v]
@@ -4932,7 +4932,7 @@
                  (cond 
                   (instance? java.lang.Enum ev)
                   (.visitEnum av name (descriptor (class ev)) (str ev))
-                  (class? ev) (.visit av name (clojure.asm.Type/getType ev))
+                  (class? ev) (.visit av name (org.objectweb.asm.Type/getType ev))
                   :else (throw (IllegalArgumentException. 
                                 (str "Unsupported annotation value: " v " of class " (class ev))))))
    (seq? v) (let [[nested nv] v

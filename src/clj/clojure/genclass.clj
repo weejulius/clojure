@@ -9,8 +9,8 @@
 (in-ns 'clojure.core)
 
 (import '(java.lang.reflect Modifier Constructor)
-        '(clojure.asm ClassWriter ClassVisitor Opcodes Type)
-        '(clojure.asm.commons Method GeneratorAdapter)
+        '(org.objectweb.asm ClassWriter ClassVisitor Opcodes Type)
+        '(org.objectweb.asm.commons Method GeneratorAdapter)
         '(clojure.lang IPersistentMap))
 
 ;(defn method-sig [^java.lang.reflect.Method meth]
