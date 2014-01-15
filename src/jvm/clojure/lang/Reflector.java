@@ -12,7 +12,7 @@
 
 package clojure.lang;
 
-import com.esotericsoftware.reflectasm.MethodAccess;
+import com.esotericsoftware.reflectasm.FieldAccess;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -25,11 +25,11 @@ import java.util.List;
 public class Reflector {
 
     public static Object invokeInstanceMethod(Object target, String methodName, Object[] args) {
-//        Class c = target.getClass();
-//        List methods = getMethods(c, args.length, methodName, false);
-//        return invokeMatchingMethod(methodName, methods, target, args);
-        MethodAccess access = MethodAccess.get(target.getClass());
-        return access.invoke(target, methodName, args);
+        Class c = target.getClass();
+       // MethodAccess access = MethodAccess.get(c);
+       // access.invoke(target,methodName,args);
+        List methods = getMethods(c, args.length, methodName, false);
+        return invokeMatchingMethod(methodName, methods, target, args);
     }
 
     private static Throwable getCauseOrElse(Exception e) {
@@ -49,7 +49,7 @@ public class Reflector {
                 + (target == null ? "" : " for " + target.getClass());
     }
 
-    static Object invokeMatchingMethod(String methodName, List methods, Object target, Object[] args) {
+    public static Object invokeMatchingMethod(String methodName, List methods, Object target, Object[] args) {
         Method m = null;
         Object[] boxedArgs = null;
         if (methods.isEmpty()) {
@@ -223,13 +223,9 @@ public class Reflector {
 
     public static Object getInstanceField(Object target, String fieldName) {
         Class c = target.getClass();
-        Field f = getField(c, fieldName, false);
-        if (f != null) {
-            try {
-                return prepRet(f.getType(), f.get(target));
-            } catch (IllegalAccessException e) {
-                throw Util.sneakyThrow(e);
-            }
+        Object value = getFieldValue(c, target, fieldName);
+        if (value != null) {
+            return prepRet(value.getClass(), value);
         }
         throw new IllegalArgumentException("No matching field found: " + fieldName
                                                    + " for " + target.getClass());
@@ -237,17 +233,9 @@ public class Reflector {
 
     public static Object setInstanceField(Object target, String fieldName, Object val) {
         Class c = target.getClass();
-        Field f = getField(c, fieldName, false);
-        if (f != null) {
-            try {
-                f.set(target, boxArg(f.getType(), val));
-            } catch (IllegalAccessException e) {
-                throw Util.sneakyThrow(e);
-            }
-            return val;
-        }
-        throw new IllegalArgumentException("No matching field found: " + fieldName
-                                                   + " for " + target.getClass());
+        FieldAccess access = FieldAccess.get(c);
+        access.set(target, fieldName, boxArg(val.getClass(), val));
+        return val;
     }
 
     public static Object invokeNoArgInstanceMember(Object target, String name) {
@@ -290,6 +278,11 @@ public class Reflector {
         return invokeInstanceMethod(target, name, new Object[]{arg1});
     }
 
+    private static Object getFieldValue(Class clazz, Object instance, String name) {
+        FieldAccess access = FieldAccess.get(clazz);
+        return access.get(instance, name);
+    }
+
     public static Object invokeInstanceMember(String name, Object target, Object... args) {
         return invokeInstanceMethod(target, name, args);
     }
@@ -323,13 +316,6 @@ public class Reflector {
                 } catch (NoSuchMethodException e) {
                 }
             }
-//			   && (!method.isBridge()
-//			       || (c == StringBuilder.class &&
-//			          c.getMethod(method.getName(), method.getParameterTypes())
-//					.equals(method))))
-//				{
-//				methods.add(allmethods[i]);
-//				}
         }
 
         if (methods.isEmpty())
@@ -374,7 +360,7 @@ public class Reflector {
                                                    ", given: " + arg.getClass().getName());
     }
 
-    static Object[] boxArgs(Class[] params, Object[] args) {
+    public static Object[] boxArgs(Class[] params, Object[] args) {
         if (params.length == 0)
             return null;
         Object[] ret = new Object[params.length];

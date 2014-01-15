@@ -124,7 +124,7 @@ public class PersistentList extends ASeq implements IPersistentList, IReduce, Li
     }
 
 
-    static class EmptyList extends Obj implements IPersistentList, List, ISeq, Counted {
+    public static class EmptyList extends Obj implements IPersistentList, List, ISeq, Counted {
 
         public int hashCode() {
             return 1;

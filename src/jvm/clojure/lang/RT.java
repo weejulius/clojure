@@ -186,431 +186,434 @@ final static public Var IN =
 final static public Var ERR =
 		Var.intern(CLOJURE_NS, Symbol.intern("*err*"),
 		           new PrintWriter(new OutputStreamWriter(System.err), true)).setDynamic();
-final static Keyword TAG_KEY = Keyword.intern(null, "tag");
-final static Keyword CONST_KEY = Keyword.intern(null, "const");
-final static public Var AGENT = Var.intern(CLOJURE_NS, Symbol.intern("*agent*"), null).setDynamic();
-static Object readeval = readTrueFalseUnknown(System.getProperty("clojure.read.eval","true"));
-final static public Var READEVAL = Var.intern(CLOJURE_NS, Symbol.intern("*read-eval*"),  readeval).setDynamic();
-final static public Var DATA_READERS = Var.intern(CLOJURE_NS, Symbol.intern("*data-readers*"), RT.map()).setDynamic();
-final static public Var DEFAULT_DATA_READER_FN = Var.intern(CLOJURE_NS, Symbol.intern("*default-data-reader-fn*"), RT.map()).setDynamic();
-final static public Var DEFAULT_DATA_READERS = Var.intern(CLOJURE_NS, Symbol.intern("default-data-readers"), RT.map());
-final static public Var ASSERT = Var.intern(CLOJURE_NS, Symbol.intern("*assert*"), T).setDynamic();
-final static public Var MATH_CONTEXT = Var.intern(CLOJURE_NS, Symbol.intern("*math-context*"), null).setDynamic();
-static Keyword LINE_KEY = Keyword.intern(null, "line");
-static Keyword COLUMN_KEY = Keyword.intern(null, "column");
-static Keyword FILE_KEY = Keyword.intern(null, "file");
-static Keyword DECLARED_KEY = Keyword.intern(null, "declared");
-static Keyword DOC_KEY = Keyword.intern(null, "doc");
-final static public Var USE_CONTEXT_CLASSLOADER =
-		Var.intern(CLOJURE_NS, Symbol.intern("*use-context-classloader*"), T).setDynamic();
-//boolean
-static final public Var UNCHECKED_MATH = Var.intern(Namespace.findOrCreate(Symbol.intern("clojure.core")),
-                                                   Symbol.intern("*unchecked-math*"), Boolean.FALSE).setDynamic();
+public final static Keyword TAG_KEY                 = Keyword.intern(null, "tag");
+public final static Keyword CONST_KEY               = Keyword.intern(null, "const");
+final static public Var     AGENT                   = Var.intern(CLOJURE_NS, Symbol.intern("*agent*"), null)
+        .setDynamic();
+static              Object  readeval                = readTrueFalseUnknown(System.getProperty("clojure.read.eval",
+                                                                                              "true"));
+final static public Var     READEVAL                = Var.intern(CLOJURE_NS, Symbol.intern("*read-eval*"), readeval)
+        .setDynamic();
+final static public Var     DATA_READERS            = Var.intern(CLOJURE_NS, Symbol.intern("*data-readers*"), RT.map())
+        .setDynamic();
+final static public Var     DEFAULT_DATA_READER_FN  = Var.intern(CLOJURE_NS, Symbol.intern("*default-data-reader-fn*"),
+                                                                 RT.map()).setDynamic();
+final static public Var     DEFAULT_DATA_READERS    = Var.intern(CLOJURE_NS, Symbol.intern("default-data-readers"),
+                                                                 RT.map());
+final static public Var     ASSERT                  = Var.intern(CLOJURE_NS, Symbol.intern("*assert*"), T).setDynamic();
+final static public Var     MATH_CONTEXT            = Var.intern(CLOJURE_NS, Symbol.intern("*math-context*"), null)
+        .setDynamic();
+public static       Keyword LINE_KEY                = Keyword.intern(null, "line");
+public static       Keyword COLUMN_KEY              = Keyword.intern(null, "column");
+public static       Keyword FILE_KEY                = Keyword.intern(null, "file");
+public static       Keyword DECLARED_KEY            = Keyword.intern(null, "declared");
+public static       Keyword DOC_KEY                 = Keyword.intern(null, "doc");
+final static public Var     USE_CONTEXT_CLASSLOADER =
+        Var.intern(CLOJURE_NS, Symbol.intern("*use-context-classloader*"), T).setDynamic();
+    //boolean
+static final public Var     UNCHECKED_MATH          = Var.intern(Namespace.findOrCreate(Symbol.intern("clojure.core")),
+                                                                 Symbol.intern("*unchecked-math*"), Boolean.FALSE)
+            .setDynamic();
 
 //final static public Var CURRENT_MODULE = Var.intern(Symbol.intern("clojure.core", "current-module"),
 //                                                    Module.findOrCreateModule("clojure/user"));
 
-final static Symbol LOAD_FILE = Symbol.intern("load-file");
-final static Symbol IN_NAMESPACE = Symbol.intern("in-ns");
-final static Symbol NAMESPACE = Symbol.intern("ns");
-static final Symbol IDENTICAL = Symbol.intern("identical?");
-final static Var CMD_LINE_ARGS = Var.intern(CLOJURE_NS, Symbol.intern("*command-line-args*"), null).setDynamic();
-//symbol
-final public static Var CURRENT_NS = Var.intern(CLOJURE_NS, Symbol.intern("*ns*"),
-                                                CLOJURE_NS).setDynamic();
+    final static        Symbol LOAD_FILE     = Symbol.intern("load-file");
+    final static        Symbol IN_NAMESPACE  = Symbol.intern("in-ns");
+    final static        Symbol NAMESPACE     = Symbol.intern("ns");
+    static final        Symbol IDENTICAL     = Symbol.intern("identical?");
+    final static        Var    CMD_LINE_ARGS = Var.intern(CLOJURE_NS, Symbol.intern("*command-line-args*"), null)
+            .setDynamic();
+    //symbol
+    final public static Var    CURRENT_NS    = Var.intern(CLOJURE_NS, Symbol.intern("*ns*"),
+                                                          CLOJURE_NS).setDynamic();
 
-final static Var FLUSH_ON_NEWLINE = Var.intern(CLOJURE_NS, Symbol.intern("*flush-on-newline*"), T).setDynamic();
-final static Var PRINT_META = Var.intern(CLOJURE_NS, Symbol.intern("*print-meta*"), F).setDynamic();
-final static Var PRINT_READABLY = Var.intern(CLOJURE_NS, Symbol.intern("*print-readably*"), T).setDynamic();
-final static Var PRINT_DUP = Var.intern(CLOJURE_NS, Symbol.intern("*print-dup*"), F).setDynamic();
-final static Var WARN_ON_REFLECTION = Var.intern(CLOJURE_NS, Symbol.intern("*warn-on-reflection*"), F).setDynamic();
-final static Var ALLOW_UNRESOLVED_VARS = Var.intern(CLOJURE_NS, Symbol.intern("*allow-unresolved-vars*"), F).setDynamic();
+    final static        Var FLUSH_ON_NEWLINE      = Var.intern(CLOJURE_NS, Symbol.intern("*flush-on-newline*"), T)
+            .setDynamic();
+    final static        Var PRINT_META            = Var.intern(CLOJURE_NS, Symbol.intern("*print-meta*"), F)
+            .setDynamic();
+    final static        Var PRINT_READABLY        = Var.intern(CLOJURE_NS, Symbol.intern("*print-readably*"), T)
+            .setDynamic();
+    public final static Var PRINT_DUP             = Var.intern(CLOJURE_NS, Symbol.intern("*print-dup*"), F)
+            .setDynamic();
+    public final static Var WARN_ON_REFLECTION    = Var.intern(CLOJURE_NS, Symbol.intern("*warn-on-reflection*"), F)
+            .setDynamic();
+    public final static Var ALLOW_UNRESOLVED_VARS = Var.intern(CLOJURE_NS, Symbol.intern("*allow-unresolved-vars*"), F)
+            .setDynamic();
 
-final static Var IN_NS_VAR = Var.intern(CLOJURE_NS, Symbol.intern("in-ns"), F);
-final static Var NS_VAR = Var.intern(CLOJURE_NS, Symbol.intern("ns"), F);
-final static Var FN_LOADER_VAR = Var.intern(CLOJURE_NS, Symbol.intern("*fn-loader*"), null).setDynamic();
-static final Var PRINT_INITIALIZED = Var.intern(CLOJURE_NS, Symbol.intern("print-initialized"));
-static final Var PR_ON = Var.intern(CLOJURE_NS, Symbol.intern("pr-on"));
-//final static Var IMPORTS = Var.intern(CLOJURE_NS, Symbol.intern("*imports*"), DEFAULT_IMPORTS);
-final static IFn inNamespace = new AFn(){
-	public Object invoke(Object arg1) {
-		Symbol nsname = (Symbol) arg1;
-		Namespace ns = Namespace.findOrCreate(nsname);
-		CURRENT_NS.set(ns);
-		return ns;
-	}
-};
+    public final static Var IN_NS_VAR         = Var.intern(CLOJURE_NS, Symbol.intern("in-ns"), F);
+    public final static Var NS_VAR            = Var.intern(CLOJURE_NS, Symbol.intern("ns"), F);
+    public final static Var FN_LOADER_VAR     = Var.intern(CLOJURE_NS, Symbol.intern("*fn-loader*"), null).setDynamic();
+    static final        Var PRINT_INITIALIZED = Var.intern(CLOJURE_NS, Symbol.intern("print-initialized"));
+    static final        Var PR_ON             = Var.intern(CLOJURE_NS, Symbol.intern("pr-on"));
+    //final static Var IMPORTS = Var.intern(CLOJURE_NS, Symbol.intern("*imports*"), DEFAULT_IMPORTS);
+    final static        IFn inNamespace       = new AFn() {
+        public Object invoke(Object arg1) {
+            Symbol nsname = (Symbol) arg1;
+            Namespace ns = Namespace.findOrCreate(nsname);
+            CURRENT_NS.set(ns);
+            return ns;
+        }
+    };
 
-final static IFn bootNamespace = new AFn(){
-	public Object invoke(Object __form, Object __env,Object arg1) {
-		Symbol nsname = (Symbol) arg1;
-		Namespace ns = Namespace.findOrCreate(nsname);
-		CURRENT_NS.set(ns);
-		return ns;
-	}
-};
+    final static IFn bootNamespace = new AFn() {
+        public Object invoke(Object __form, Object __env, Object arg1) {
+            Symbol nsname = (Symbol) arg1;
+            Namespace ns = Namespace.findOrCreate(nsname);
+            CURRENT_NS.set(ns);
+            return ns;
+        }
+    };
 
-public static List<String> processCommandLine(String[] args){
-	List<String> arglist = Arrays.asList(args);
-	int split = arglist.indexOf("--");
-	if(split >= 0) {
-		CMD_LINE_ARGS.bindRoot(RT.seq(arglist.subList(split + 1, args.length)));
-		return arglist.subList(0, split);
-	}
-	return arglist;
-}
-
-// duck typing stderr plays nice with e.g. swank 
-public static PrintWriter errPrintWriter(){
-    Writer w = (Writer) ERR.deref();
-    if (w instanceof PrintWriter) {
-        return (PrintWriter) w;
-    } else {
-        return new PrintWriter(w);
+    public static List<String> processCommandLine(String[] args) {
+        List<String> arglist = Arrays.asList(args);
+        int split = arglist.indexOf("--");
+        if (split >= 0) {
+            CMD_LINE_ARGS.bindRoot(RT.seq(arglist.subList(split + 1, args.length)));
+            return arglist.subList(0, split);
+        }
+        return arglist;
     }
-}
 
-static public final Object[] EMPTY_ARRAY = new Object[]{};
-static public final Comparator DEFAULT_COMPARATOR = new DefaultComparator();
-
-private static final class DefaultComparator implements Comparator, Serializable {
-    public int compare(Object o1, Object o2){
-		return Util.compare(o1, o2);
-	}
-
-    private Object readResolve() throws ObjectStreamException {
-        // ensures that we aren't hanging onto a new default comparator for every
-        // sorted set, etc., we deserialize
-        return DEFAULT_COMPARATOR;
+    // duck typing stderr plays nice with e.g. swank
+    public static PrintWriter errPrintWriter() {
+        Writer w = (Writer) ERR.deref();
+        if (w instanceof PrintWriter) {
+            return (PrintWriter) w;
+        } else {
+            return new PrintWriter(w);
+        }
     }
-}
 
-static AtomicInteger id = new AtomicInteger(1);
+    static public final Object[]   EMPTY_ARRAY        = new Object[]{};
+    static public final Comparator DEFAULT_COMPARATOR = new DefaultComparator();
 
-static public void addURL(Object url) throws MalformedURLException{
-	URL u = (url instanceof String) ? (new URL((String) url)) : (URL) url;
-	ClassLoader ccl = Thread.currentThread().getContextClassLoader();
-	if(ccl instanceof DynamicClassLoader)
-		((DynamicClassLoader)ccl).addURL(u);
-	else
-		throw new IllegalAccessError("Context classloader is not a DynamicClassLoader");
-}
+    private static final class DefaultComparator implements Comparator, Serializable {
+        public int compare(Object o1, Object o2) {
+            return Util.compare(o1, o2);
+        }
 
-static{
-	Keyword arglistskw = Keyword.intern(null, "arglists");
-	Symbol namesym = Symbol.intern("name");
-	OUT.setTag(Symbol.intern("java.io.Writer"));
-	CURRENT_NS.setTag(Symbol.intern("clojure.lang.Namespace"));
-	AGENT.setMeta(map(DOC_KEY, "The agent currently running an action on this thread, else nil"));
-	AGENT.setTag(Symbol.intern("clojure.lang.Agent"));
-	MATH_CONTEXT.setTag(Symbol.intern("java.math.MathContext"));
-	Var nv = Var.intern(CLOJURE_NS, NAMESPACE, bootNamespace);
-	nv.setMacro();
-	Var v;
-	v = Var.intern(CLOJURE_NS, IN_NAMESPACE, inNamespace);
-	v.setMeta(map(DOC_KEY, "Sets *ns* to the namespace named by the symbol, creating it if needed.",
-	              arglistskw, list(vector(namesym))));
-	v = Var.intern(CLOJURE_NS, LOAD_FILE,
-	               new AFn(){
-		               public Object invoke(Object arg1) {
-			               try
-				               {
-				               return Compiler.loadFile((String) arg1);
-				               }
-			               catch(IOException e)
-				               {
-				               throw Util.sneakyThrow(e);
-				               }
-		               }
-	               });
-	v.setMeta(map(DOC_KEY, "Sequentially read and evaluate the set of forms contained in the file.",
-	              arglistskw, list(vector(namesym))));
-	try {
-		doInit();
-	}
-	catch(Exception e) {
-		throw Util.sneakyThrow(e);
-	}
-}
+        private Object readResolve() throws ObjectStreamException {
+            // ensures that we aren't hanging onto a new default comparator for every
+            // sorted set, etc., we deserialize
+            return DEFAULT_COMPARATOR;
+        }
+    }
 
-static public Keyword keyword(String ns, String name){
-	return Keyword.intern((Symbol.intern(ns, name)));
-}
+    static AtomicInteger id = new AtomicInteger(1);
 
-static public Var var(String ns, String name){
-	return Var.intern(Namespace.findOrCreate(Symbol.intern(null, ns)), Symbol.intern(null, name));
-}
+    static public void addURL(Object url) throws MalformedURLException {
+        URL u = (url instanceof String) ? (new URL((String) url)) : (URL) url;
+        ClassLoader ccl = Thread.currentThread().getContextClassLoader();
+        if (ccl instanceof DynamicClassLoader)
+            ((DynamicClassLoader) ccl).addURL(u);
+        else
+            throw new IllegalAccessError("Context classloader is not a DynamicClassLoader");
+    }
 
-static public Var var(String ns, String name, Object init){
-	return Var.intern(Namespace.findOrCreate(Symbol.intern(null, ns)), Symbol.intern(null, name), init);
-}
+    static {
+        Keyword arglistskw = Keyword.intern(null, "arglists");
+        Symbol namesym = Symbol.intern("name");
+        OUT.setTag(Symbol.intern("java.io.Writer"));
+        CURRENT_NS.setTag(Symbol.intern("clojure.lang.Namespace"));
+        AGENT.setMeta(map(DOC_KEY, "The agent currently running an action on this thread, else nil"));
+        AGENT.setTag(Symbol.intern("clojure.lang.Agent"));
+        MATH_CONTEXT.setTag(Symbol.intern("java.math.MathContext"));
+        Var nv = Var.intern(CLOJURE_NS, NAMESPACE, bootNamespace);
+        nv.setMacro();
+        Var v;
+        v = Var.intern(CLOJURE_NS, IN_NAMESPACE, inNamespace);
+        v.setMeta(map(DOC_KEY, "Sets *ns* to the namespace named by the symbol, creating it if needed.",
+                      arglistskw, list(vector(namesym))));
+        v = Var.intern(CLOJURE_NS, LOAD_FILE,
+                       new AFn() {
+                           public Object invoke(Object arg1) {
+                               try {
+                                   return Compiler.loadFile((String) arg1);
+                               } catch (IOException e) {
+                                   throw Util.sneakyThrow(e);
+                               }
+                           }
+                       });
+        v.setMeta(map(DOC_KEY, "Sequentially read and evaluate the set of forms contained in the file.",
+                      arglistskw, list(vector(namesym))));
+        try {
+            doInit();
+        } catch (Exception e) {
+            throw Util.sneakyThrow(e);
+        }
+    }
 
-public static void loadResourceScript(String name) throws IOException{
-	loadResourceScript(name, true);
-}
+    static public Keyword keyword(String ns, String name) {
+        return Keyword.intern((Symbol.intern(ns, name)));
+    }
 
-public static void maybeLoadResourceScript(String name) throws IOException{
-	loadResourceScript(name, false);
-}
+    static public Var var(String ns, String name) {
+        return Var.intern(Namespace.findOrCreate(Symbol.intern(null, ns)), Symbol.intern(null, name));
+    }
 
-public static void loadResourceScript(String name, boolean failIfNotFound) throws IOException{
-	loadResourceScript(RT.class, name, failIfNotFound);
-}
+    static public Var var(String ns, String name, Object init) {
+        return Var.intern(Namespace.findOrCreate(Symbol.intern(null, ns)), Symbol.intern(null, name), init);
+    }
 
-public static void loadResourceScript(Class c, String name) throws IOException{
-	loadResourceScript(c, name, true);
-}
+    public static void loadResourceScript(String name) throws IOException {
+        loadResourceScript(name, true);
+    }
 
-public static void loadResourceScript(Class c, String name, boolean failIfNotFound) throws IOException{
-	int slash = name.lastIndexOf('/');
-	String file = slash >= 0 ? name.substring(slash + 1) : name;
-	InputStream ins = resourceAsStream(baseLoader(), name);
-	if(ins != null) {
-		try {
-			Compiler.load(new InputStreamReader(ins, UTF8), name, file);
-		}
-		finally {
-			ins.close();
-		}
-	}
-	else if(failIfNotFound) {
-		throw new FileNotFoundException("Could not locate Clojure resource on classpath: " + name);
-	}
-}
+    public static void maybeLoadResourceScript(String name) throws IOException {
+        loadResourceScript(name, false);
+    }
 
-static public void init() {
-	RT.errPrintWriter().println("No need to call RT.init() anymore");
-}
+    public static void loadResourceScript(String name, boolean failIfNotFound) throws IOException {
+        loadResourceScript(RT.class, name, failIfNotFound);
+    }
 
-static public long lastModified(URL url, String libfile) throws IOException{
-	if(url.getProtocol().equals("jar")) {
-		return ((JarURLConnection) url.openConnection()).getJarFile().getEntry(libfile).getTime();
-	}
-	else {
-		return url.openConnection().getLastModified();
-	}
-}
+    public static void loadResourceScript(Class c, String name) throws IOException {
+        loadResourceScript(c, name, true);
+    }
 
-static void compile(String cljfile) throws IOException{
+    public static void loadResourceScript(Class c, String name, boolean failIfNotFound) throws IOException {
+        int slash = name.lastIndexOf('/');
+        String file = slash >= 0 ? name.substring(slash + 1) : name;
+        InputStream ins = resourceAsStream(baseLoader(), name);
+        if (ins != null) {
+            try {
+                Compiler.load(new InputStreamReader(ins, UTF8), name, file);
+            } finally {
+                ins.close();
+            }
+        } else if (failIfNotFound) {
+            throw new FileNotFoundException("Could not locate Clojure resource on classpath: " + name);
+        }
+    }
+
+    static public void init() {
+        RT.errPrintWriter().println("No need to call RT.init() anymore");
+    }
+
+    static public long lastModified(URL url, String libfile) throws IOException {
+        if (url.getProtocol().equals("jar")) {
+            return ((JarURLConnection) url.openConnection()).getJarFile().getEntry(libfile).getTime();
+        } else {
+            return url.openConnection().getLastModified();
+        }
+    }
+
+    static void compile(String cljfile) throws IOException {
         InputStream ins = resourceAsStream(baseLoader(), cljfile);
-	if(ins != null) {
-		try {
-			Compiler.compile(new InputStreamReader(ins, UTF8), cljfile,
-			                 cljfile.substring(1 + cljfile.lastIndexOf("/")));
-		}
-		finally {
-			ins.close();
-		}
+        if (ins != null) {
+            try {
+                Compiler.compile(new InputStreamReader(ins, UTF8), cljfile,
+                                 cljfile.substring(1 + cljfile.lastIndexOf("/")));
+            } finally {
+                ins.close();
+            }
 
-	}
-	else
-		throw new FileNotFoundException("Could not locate Clojure resource on classpath: " + cljfile);
-}
+        } else
+            throw new FileNotFoundException("Could not locate Clojure resource on classpath: " + cljfile);
+    }
 
-static public void load(String scriptbase) throws IOException, ClassNotFoundException{
-	load(scriptbase, true);
-}
+    static public void load(String scriptbase) throws IOException, ClassNotFoundException {
+        load(scriptbase, true);
+    }
 
-static public void load(String scriptbase, boolean failIfNotFound) throws IOException, ClassNotFoundException{
-	String classfile = scriptbase + LOADER_SUFFIX + ".class";
-	String cljfile = scriptbase + ".clj";
-	URL classURL = getResource(baseLoader(),classfile);
-	URL cljURL = getResource(baseLoader(), cljfile);
-	boolean loaded = false;
+    static public void load(String scriptbase, boolean failIfNotFound) throws IOException, ClassNotFoundException {
+        String classfile = scriptbase + LOADER_SUFFIX + ".class";
+        String cljfile = scriptbase + ".clj";
+        URL classURL = getResource(baseLoader(), classfile);
+        URL cljURL = getResource(baseLoader(), cljfile);
+        boolean loaded = false;
 
-	if((classURL != null &&
-	    (cljURL == null
-	     || lastModified(classURL, classfile) > lastModified(cljURL, cljfile)))
-	   || classURL == null) {
-		try {
-			Var.pushThreadBindings(
-					RT.mapUniqueKeys(CURRENT_NS, CURRENT_NS.deref(),
-					       WARN_ON_REFLECTION, WARN_ON_REFLECTION.deref()
-							,RT.UNCHECKED_MATH, RT.UNCHECKED_MATH.deref()));
-			loaded = (loadClassForName(scriptbase.replace('/', '.') + LOADER_SUFFIX) != null);
-		}
-		finally {
-			Var.popThreadBindings();
-		}
-	}
-	if(!loaded && cljURL != null) {
-		if(booleanCast(Compiler.COMPILE_FILES.deref()))
-			compile(cljfile);
-		else
-			loadResourceScript(RT.class, cljfile);
-	}
-	else if(!loaded && failIfNotFound)
-		throw new FileNotFoundException(String.format("Could not locate %s or %s on classpath: ", classfile, cljfile));
-}
+        if ((classURL != null &&
+                (cljURL == null
+                        || lastModified(classURL, classfile) > lastModified(cljURL, cljfile)))
+                || classURL == null) {
+            try {
+                Var.pushThreadBindings(
+                        RT.mapUniqueKeys(CURRENT_NS, CURRENT_NS.deref(),
+                                         WARN_ON_REFLECTION, WARN_ON_REFLECTION.deref()
+                                , RT.UNCHECKED_MATH, RT.UNCHECKED_MATH.deref()));
+                loaded = (loadClassForName(scriptbase.replace('/', '.') + LOADER_SUFFIX) != null);
+            } finally {
+                Var.popThreadBindings();
+            }
+        }
+        if (!loaded && cljURL != null) {
+            if (booleanCast(Compiler.COMPILE_FILES.deref()))
+                compile(cljfile);
+            else
+                loadResourceScript(RT.class, cljfile);
+        } else if (!loaded && failIfNotFound)
+            throw new FileNotFoundException(String.format("Could not locate %s or %s on classpath: ", classfile,
+                                                          cljfile));
+    }
 
-static void doInit() throws ClassNotFoundException, IOException{
-	load("clojure/core");
+    static void doInit() throws ClassNotFoundException, IOException {
+        load("clojure/core");
 
-	Var.pushThreadBindings(
-			RT.mapUniqueKeys(CURRENT_NS, CURRENT_NS.deref(),
-			       WARN_ON_REFLECTION, WARN_ON_REFLECTION.deref()
-					,RT.UNCHECKED_MATH, RT.UNCHECKED_MATH.deref()));
-	try {
-		Symbol USER = Symbol.intern("user");
-		Symbol CLOJURE = Symbol.intern("clojure.core");
+        Var.pushThreadBindings(
+                RT.mapUniqueKeys(CURRENT_NS, CURRENT_NS.deref(),
+                                 WARN_ON_REFLECTION, WARN_ON_REFLECTION.deref()
+                        , RT.UNCHECKED_MATH, RT.UNCHECKED_MATH.deref()));
+        try {
+            Symbol USER = Symbol.intern("user");
+            Symbol CLOJURE = Symbol.intern("clojure.core");
 
-		Var in_ns = var("clojure.core", "in-ns");
-		Var refer = var("clojure.core", "refer");
-		in_ns.invoke(USER);
-		refer.invoke(CLOJURE);
-		maybeLoadResourceScript("user.clj");
-	}
-	finally {
-		Var.popThreadBindings();
-	}
-}
+            Var in_ns = var("clojure.core", "in-ns");
+            Var refer = var("clojure.core", "refer");
+            in_ns.invoke(USER);
+            refer.invoke(CLOJURE);
+            maybeLoadResourceScript("user.clj");
+        } finally {
+            Var.popThreadBindings();
+        }
+    }
 
-static public int nextID(){
-	return id.getAndIncrement();
-}
+    static public int nextID() {
+        return id.getAndIncrement();
+    }
 
-// Load a library in the System ClassLoader instead of Clojure's own.
-public static void loadLibrary(String libname){
-    System.loadLibrary(libname);
-}
+    // Load a library in the System ClassLoader instead of Clojure's own.
+    public static void loadLibrary(String libname) {
+        System.loadLibrary(libname);
+    }
 
 
 ////////////// Collections support /////////////////////////////////
 
-static public ISeq seq(Object coll){
-	if(coll instanceof ASeq)
-		return (ASeq) coll;
-	else if(coll instanceof LazySeq)
-		return ((LazySeq) coll).seq();
-	else
-		return seqFrom(coll);
-}
+    static public ISeq seq(Object coll) {
+        if (coll instanceof ASeq)
+            return (ASeq) coll;
+        else if (coll instanceof LazySeq)
+            return ((LazySeq) coll).seq();
+        else
+            return seqFrom(coll);
+    }
 
-static ISeq seqFrom(Object coll){
-	if(coll instanceof Seqable)
-		return ((Seqable) coll).seq();
-	else if(coll == null)
-		return null;
-	else if(coll instanceof Iterable)
-		return IteratorSeq.create(((Iterable) coll).iterator());
-	else if(coll.getClass().isArray())
-		return ArraySeq.createFromObject(coll);
-	else if(coll instanceof CharSequence)
-		return StringSeq.create((CharSequence) coll);
-	else if(coll instanceof Map)
-		return seq(((Map) coll).entrySet());
-	else {
-		Class c = coll.getClass();
-		Class sc = c.getSuperclass();
-		throw new ExceptionInfo("Don't know how to create ISeq from: " + c.getName(),
-                                        map(Keyword.intern("instance"), coll));
-	}
-}
+    static ISeq seqFrom(Object coll) {
+        if (coll instanceof Seqable)
+            return ((Seqable) coll).seq();
+        else if (coll == null)
+            return null;
+        else if (coll instanceof Iterable)
+            return IteratorSeq.create(((Iterable) coll).iterator());
+        else if (coll.getClass().isArray())
+            return ArraySeq.createFromObject(coll);
+        else if (coll instanceof CharSequence)
+            return StringSeq.create((CharSequence) coll);
+        else if (coll instanceof Map)
+            return seq(((Map) coll).entrySet());
+        else {
+            Class c = coll.getClass();
+            Class sc = c.getSuperclass();
+            throw new ExceptionInfo("Don't know how to create ISeq from: " + c.getName(),
+                                    map(Keyword.intern("instance"), coll));
+        }
+    }
 
-static public Object seqOrElse(Object o) {
-	return seq(o) == null ? null : o;
-}
+    static public Object seqOrElse(Object o) {
+        return seq(o) == null ? null : o;
+    }
 
-static public ISeq keys(Object coll){
-	return APersistentMap.KeySeq.create(seq(coll));
-}
+    static public ISeq keys(Object coll) {
+        return APersistentMap.KeySeq.create(seq(coll));
+    }
 
-static public ISeq vals(Object coll){
-	return APersistentMap.ValSeq.create(seq(coll));
-}
+    static public ISeq vals(Object coll) {
+        return APersistentMap.ValSeq.create(seq(coll));
+    }
 
-static public IPersistentMap meta(Object x){
-	if(x instanceof IMeta)
-		return ((IMeta) x).meta();
-	return null;
-}
+    static public IPersistentMap meta(Object x) {
+        if (x instanceof IMeta)
+            return ((IMeta) x).meta();
+        return null;
+    }
 
-public static int count(Object o){
-	if(o instanceof Counted)
-		return ((Counted) o).count();
-	return countFrom(Util.ret1(o, o = null));
-}
+    public static int count(Object o) {
+        if (o instanceof Counted)
+            return ((Counted) o).count();
+        return countFrom(Util.ret1(o, o = null));
+    }
 
-static int countFrom(Object o){
-	if(o == null)
-		return 0;
-	else if(o instanceof IPersistentCollection) {
-		ISeq s = seq(o);
-		o = null;
-		int i = 0;
-		for(; s != null; s = s.next()) {
-			if(s instanceof Counted)
-				return i + s.count();
-			i++;
-		}
-		return i;
-	}
-	else if(o instanceof CharSequence)
-		return ((CharSequence) o).length();
-	else if(o instanceof Collection)
-		return ((Collection) o).size();
-	else if(o instanceof Map)
-		return ((Map) o).size();
-	else if(o.getClass().isArray())
-		return Array.getLength(o);
+    static int countFrom(Object o) {
+        if (o == null)
+            return 0;
+        else if (o instanceof IPersistentCollection) {
+            ISeq s = seq(o);
+            o = null;
+            int i = 0;
+            for (; s != null; s = s.next()) {
+                if (s instanceof Counted)
+                    return i + s.count();
+                i++;
+            }
+            return i;
+        } else if (o instanceof CharSequence)
+            return ((CharSequence) o).length();
+        else if (o instanceof Collection)
+            return ((Collection) o).size();
+        else if (o instanceof Map)
+            return ((Map) o).size();
+        else if (o.getClass().isArray())
+            return Array.getLength(o);
 
-	throw new UnsupportedOperationException("count not supported on this type: " + o.getClass().getSimpleName());
-}
+        throw new UnsupportedOperationException("count not supported on this type: " + o.getClass().getSimpleName());
+    }
 
-static public IPersistentCollection conj(IPersistentCollection coll, Object x){
-	if(coll == null)
-		return new PersistentList(x);
-	return coll.cons(x);
-}
+    static public IPersistentCollection conj(IPersistentCollection coll, Object x) {
+        if (coll == null)
+            return new PersistentList(x);
+        return coll.cons(x);
+    }
 
-static public ISeq cons(Object x, Object coll){
-	//ISeq y = seq(coll);
-	if(coll == null)
-		return new PersistentList(x);
-	else if(coll instanceof ISeq)
-		return new Cons(x, (ISeq) coll);
-	else
-		return new Cons(x, seq(coll));
-}
+    static public ISeq cons(Object x, Object coll) {
+        //ISeq y = seq(coll);
+        if (coll == null)
+            return new PersistentList(x);
+        else if (coll instanceof ISeq)
+            return new Cons(x, (ISeq) coll);
+        else
+            return new Cons(x, seq(coll));
+    }
 
-static public Object first(Object x){
-	if(x instanceof ISeq)
-		return ((ISeq) x).first();
-	ISeq seq = seq(x);
-	if(seq == null)
-		return null;
-	return seq.first();
-}
+    static public Object first(Object x) {
+        if (x instanceof ISeq)
+            return ((ISeq) x).first();
+        ISeq seq = seq(x);
+        if (seq == null)
+            return null;
+        return seq.first();
+    }
 
-static public Object second(Object x){
-	return first(next(x));
-}
+    static public Object second(Object x) {
+        return first(next(x));
+    }
 
-static public Object third(Object x){
-	return first(next(next(x)));
-}
+    static public Object third(Object x) {
+        return first(next(next(x)));
+    }
 
-static public Object fourth(Object x){
-	return first(next(next(next(x))));
-}
+    static public Object fourth(Object x) {
+        return first(next(next(next(x))));
+    }
 
-static public ISeq next(Object x){
-	if(x instanceof ISeq)
-		return ((ISeq) x).next();
-	ISeq seq = seq(x);
-	if(seq == null)
-		return null;
-	return seq.next();
-}
+    static public ISeq next(Object x) {
+        if (x instanceof ISeq)
+            return ((ISeq) x).next();
+        ISeq seq = seq(x);
+        if (seq == null)
+            return null;
+        return seq.next();
+    }
 
-static public ISeq more(Object x){
-	if(x instanceof ISeq)
-		return ((ISeq) x).more();
-	ISeq seq = seq(x);
-	if(seq == null)
-		return PersistentList.EMPTY;
-	return seq.more();
-}
+    static public ISeq more(Object x) {
+        if (x instanceof ISeq)
+            return ((ISeq) x).more();
+        ISeq seq = seq(x);
+        if (seq == null)
+            return PersistentList.EMPTY;
+        return seq.more();
+    }
 
 //static public Seqable more(Object x){
 //    Seqable ret = null;
@@ -629,69 +632,65 @@ static public ISeq more(Object x){
 //    return ret;
 //}
 
-static public Object peek(Object x){
-	if(x == null)
-		return null;
-	return ((IPersistentStack) x).peek();
-}
+    static public Object peek(Object x) {
+        if (x == null)
+            return null;
+        return ((IPersistentStack) x).peek();
+    }
 
-static public Object pop(Object x){
-	if(x == null)
-		return null;
-	return ((IPersistentStack) x).pop();
-}
+    static public Object pop(Object x) {
+        if (x == null)
+            return null;
+        return ((IPersistentStack) x).pop();
+    }
 
-static public Object get(Object coll, Object key){
-	if(coll instanceof ILookup)
-		return ((ILookup) coll).valAt(key);
-	return getFrom(coll, key);
-}
+    static public Object get(Object coll, Object key) {
+        if (coll instanceof ILookup)
+            return ((ILookup) coll).valAt(key);
+        return getFrom(coll, key);
+    }
 
-static Object getFrom(Object coll, Object key){
-	if(coll == null)
-		return null;
-	else if(coll instanceof Map) {
-		Map m = (Map) coll;
-		return m.get(key);
-	}
-	else if(coll instanceof IPersistentSet) {
-		IPersistentSet set = (IPersistentSet) coll;
-		return set.get(key);
-	}
-	else if(key instanceof Number && (coll instanceof String || coll.getClass().isArray())) {
-		int n = ((Number) key).intValue();
-		if(n >= 0 && n < count(coll))
-			return nth(coll, n);
-		return null;
-	}
+    static Object getFrom(Object coll, Object key) {
+        if (coll == null)
+            return null;
+        else if (coll instanceof Map) {
+            Map m = (Map) coll;
+            return m.get(key);
+        } else if (coll instanceof IPersistentSet) {
+            IPersistentSet set = (IPersistentSet) coll;
+            return set.get(key);
+        } else if (key instanceof Number && (coll instanceof String || coll.getClass().isArray())) {
+            int n = ((Number) key).intValue();
+            if (n >= 0 && n < count(coll))
+                return nth(coll, n);
+            return null;
+        }
 
-	return null;
-}
+        return null;
+    }
 
-static public Object get(Object coll, Object key, Object notFound){
-	if(coll instanceof ILookup)
-		return ((ILookup) coll).valAt(key, notFound);
-	return getFrom(coll, key, notFound);
-}
+    static public Object get(Object coll, Object key, Object notFound) {
+        if (coll instanceof ILookup)
+            return ((ILookup) coll).valAt(key, notFound);
+        return getFrom(coll, key, notFound);
+    }
 
-static Object getFrom(Object coll, Object key, Object notFound){
-	if(coll == null)
-		return notFound;
-	else if(coll instanceof Map) {
-		Map m = (Map) coll;
-		if(m.containsKey(key))
-			return m.get(key);
-		return notFound;
-	}
-	else if(coll instanceof IPersistentSet) {
-		IPersistentSet set = (IPersistentSet) coll;
-		if(set.contains(key))
-			return set.get(key);
-		return notFound;
-	}
-	else if(key instanceof Number && (coll instanceof String || coll.getClass().isArray())) {
-		int n = ((Number) key).intValue();
-		return n >= 0 && n < count(coll) ? nth(coll, n) : notFound;
+    static Object getFrom(Object coll, Object key, Object notFound) {
+        if (coll == null)
+            return notFound;
+        else if (coll instanceof Map) {
+            Map m = (Map) coll;
+            if (m.containsKey(key))
+                return m.get(key);
+            return notFound;
+        } else if (coll instanceof IPersistentSet) {
+            IPersistentSet set = (IPersistentSet) coll;
+            if (set.contains(key))
+                return set.get(key);
+            return notFound;
+        } else if (key instanceof Number && (coll instanceof String || coll.getClass().isArray())) {
+            int n = ((Number) key).intValue();
+            return n >= 0 && n < count(coll) ? nth(coll, n) : notFound;
 	}
 	return notFound;
 

@@ -105,7 +105,7 @@
                                         ;box args
                   (dotimes [i (count ptypes)]
                       (. gen (loadArg i))
-                    (. clojure.lang.Compiler$HostExpr (emitBoxReturn nil gen (nth pclasses i))))
+                    (. clojure.lang.exp.HostExpr (emitBoxReturn nil gen (nth pclasses i))))
                                         ;call fn
                   (. gen (invokeInterface ifn-type (new Method "invoke" obj-type 
                                                         (into-array (cons obj-type 

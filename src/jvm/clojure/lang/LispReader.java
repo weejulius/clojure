@@ -127,242 +127,214 @@ static void unread(PushbackReader r, int ch) {
 }
 
 public static class ReaderException extends RuntimeException{
-	final int line;
-	final int column;
+	public final int line;
+    public final int column;
 
-	public ReaderException(int line, int column, Throwable cause){
-		super(cause);
-		this.line = line;
-		this.column = column;
-	}
+    public ReaderException(int line, int column, Throwable cause) {
+        super(cause);
+        this.line = line;
+        this.column = column;
+    }
 }
 
-static public int read1(Reader r){
-	try
-		{
-		return r.read();
-		}
-	catch(IOException e)
-		{
-		throw Util.sneakyThrow(e);
-		}
-}
+    static public int read1(Reader r) {
+        try {
+            return r.read();
+        } catch (IOException e) {
+            throw Util.sneakyThrow(e);
+        }
+    }
 
-static public Object read(PushbackReader r, boolean eofIsError, Object eofValue, boolean isRecursive)
-{
-	if(RT.READEVAL.deref() == UNKNOWN)
-		throw Util.runtimeException("Reading disallowed - *read-eval* bound to :unknown");
+    static public Object read(PushbackReader r, boolean eofIsError, Object eofValue, boolean isRecursive) {
+        if (RT.READEVAL.deref() == UNKNOWN)
+            throw Util.runtimeException("Reading disallowed - *read-eval* bound to :unknown");
 
-	try
-		{
-		for(; ;)
-			{
-			int ch = read1(r);
+        try {
+            for (; ; ) {
+                int ch = read1(r);
 
-			while(isWhitespace(ch))
-				ch = read1(r);
+                while (isWhitespace(ch))
+                    ch = read1(r);
 
-			if(ch == -1)
-				{
-				if(eofIsError)
-					throw Util.runtimeException("EOF while reading");
-				return eofValue;
-				}
+                if (ch == -1) {
+                    if (eofIsError)
+                        throw Util.runtimeException("EOF while reading");
+                    return eofValue;
+                }
 
-			if(Character.isDigit(ch))
-				{
-				Object n = readNumber(r, (char) ch);
-				if(RT.suppressRead())
-					return null;
-				return n;
-				}
+                if (Character.isDigit(ch)) {
+                    Object n = readNumber(r, (char) ch);
+                    if (RT.suppressRead())
+                        return null;
+                    return n;
+                }
 
-			IFn macroFn = getMacro(ch);
-			if(macroFn != null)
-				{
-				Object ret = macroFn.invoke(r, (char) ch);
-				if(RT.suppressRead())
-					return null;
-				//no op macros return the reader
-				if(ret == r)
-					continue;
-				return ret;
-				}
+                IFn macroFn = getMacro(ch);
+                if (macroFn != null) {
+                    Object ret = macroFn.invoke(r, (char) ch);
+                    if (RT.suppressRead())
+                        return null;
+                    //no op macros return the reader
+                    if (ret == r)
+                        continue;
+                    return ret;
+                }
 
-			if(ch == '+' || ch == '-')
-				{
-				int ch2 = read1(r);
-				if(Character.isDigit(ch2))
-					{
-					unread(r, ch2);
-					Object n = readNumber(r, (char) ch);
-					if(RT.suppressRead())
-						return null;
-					return n;
-					}
-				unread(r, ch2);
-				}
+                if (ch == '+' || ch == '-') {
+                    int ch2 = read1(r);
+                    if (Character.isDigit(ch2)) {
+                        unread(r, ch2);
+                        Object n = readNumber(r, (char) ch);
+                        if (RT.suppressRead())
+                            return null;
+                        return n;
+                    }
+                    unread(r, ch2);
+                }
 
-			String token = readToken(r, (char) ch);
-			if(RT.suppressRead())
-				return null;
-			return interpretToken(token);
-			}
-		}
-	catch(Exception e)
-		{
-		if(isRecursive || !(r instanceof LineNumberingPushbackReader))
-			throw Util.sneakyThrow(e);
-		LineNumberingPushbackReader rdr = (LineNumberingPushbackReader) r;
-		//throw Util.runtimeException(String.format("ReaderError:(%d,1) %s", rdr.getLineNumber(), e.getMessage()), e);
-		throw new ReaderException(rdr.getLineNumber(), rdr.getColumnNumber(), e);
-		}
-}
+                String token = readToken(r, (char) ch);
+                if (RT.suppressRead())
+                    return null;
+                return interpretToken(token);
+            }
+        } catch (Exception e) {
+            if (isRecursive || !(r instanceof LineNumberingPushbackReader))
+                throw Util.sneakyThrow(e);
+            LineNumberingPushbackReader rdr = (LineNumberingPushbackReader) r;
+            //throw Util.runtimeException(String.format("ReaderError:(%d,1) %s", rdr.getLineNumber(),
+            // e.getMessage()), e);
+            throw new ReaderException(rdr.getLineNumber(), rdr.getColumnNumber(), e);
+        }
+    }
 
-static private String readToken(PushbackReader r, char initch) {
-	StringBuilder sb = new StringBuilder();
-	sb.append(initch);
+    static private String readToken(PushbackReader r, char initch) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(initch);
 
-	for(; ;)
-		{
-		int ch = read1(r);
-		if(ch == -1 || isWhitespace(ch) || isTerminatingMacro(ch))
-			{
-			unread(r, ch);
-			return sb.toString();
-			}
-		sb.append((char) ch);
-		}
-}
+        for (; ; ) {
+            int ch = read1(r);
+            if (ch == -1 || isWhitespace(ch) || isTerminatingMacro(ch)) {
+                unread(r, ch);
+                return sb.toString();
+            }
+            sb.append((char) ch);
+        }
+    }
 
-static private Object readNumber(PushbackReader r, char initch) {
-	StringBuilder sb = new StringBuilder();
-	sb.append(initch);
+    static private Object readNumber(PushbackReader r, char initch) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(initch);
 
-	for(; ;)
-		{
-		int ch = read1(r);
-		if(ch == -1 || isWhitespace(ch) || isMacro(ch))
-			{
-			unread(r, ch);
-			break;
-			}
-		sb.append((char) ch);
-		}
+        for (; ; ) {
+            int ch = read1(r);
+            if (ch == -1 || isWhitespace(ch) || isMacro(ch)) {
+                unread(r, ch);
+                break;
+            }
+            sb.append((char) ch);
+        }
 
-	String s = sb.toString();
-	Object n = matchNumber(s);
-	if(n == null)
-		throw new NumberFormatException("Invalid number: " + s);
-	return n;
-}
+        String s = sb.toString();
+        Object n = matchNumber(s);
+        if (n == null)
+            throw new NumberFormatException("Invalid number: " + s);
+        return n;
+    }
 
-static private int readUnicodeChar(String token, int offset, int length, int base) {
-	if(token.length() != offset + length)
-		throw new IllegalArgumentException("Invalid unicode character: \\" + token);
-	int uc = 0;
-	for(int i = offset; i < offset + length; ++i)
-		{
-		int d = Character.digit(token.charAt(i), base);
-		if(d == -1)
-			throw new IllegalArgumentException("Invalid digit: " + token.charAt(i));
-		uc = uc * base + d;
-		}
-	return (char) uc;
-}
+    static private int readUnicodeChar(String token, int offset, int length, int base) {
+        if (token.length() != offset + length)
+            throw new IllegalArgumentException("Invalid unicode character: \\" + token);
+        int uc = 0;
+        for (int i = offset; i < offset + length; ++i) {
+            int d = Character.digit(token.charAt(i), base);
+            if (d == -1)
+                throw new IllegalArgumentException("Invalid digit: " + token.charAt(i));
+            uc = uc * base + d;
+        }
+        return (char) uc;
+    }
 
-static private int readUnicodeChar(PushbackReader r, int initch, int base, int length, boolean exact) {
-	int uc = Character.digit(initch, base);
-	if(uc == -1)
-		throw new IllegalArgumentException("Invalid digit: " + (char) initch);
-	int i = 1;
-	for(; i < length; ++i)
-		{
-		int ch = read1(r);
-		if(ch == -1 || isWhitespace(ch) || isMacro(ch))
-			{
-			unread(r, ch);
-			break;
-			}
-		int d = Character.digit(ch, base);
-		if(d == -1)
-			throw new IllegalArgumentException("Invalid digit: " + (char) ch);
-		uc = uc * base + d;
-		}
-	if(i != length && exact)
-		throw new IllegalArgumentException("Invalid character length: " + i + ", should be: " + length);
-	return uc;
-}
+    static private int readUnicodeChar(PushbackReader r, int initch, int base, int length, boolean exact) {
+        int uc = Character.digit(initch, base);
+        if (uc == -1)
+            throw new IllegalArgumentException("Invalid digit: " + (char) initch);
+        int i = 1;
+        for (; i < length; ++i) {
+            int ch = read1(r);
+            if (ch == -1 || isWhitespace(ch) || isMacro(ch)) {
+                unread(r, ch);
+                break;
+            }
+            int d = Character.digit(ch, base);
+            if (d == -1)
+                throw new IllegalArgumentException("Invalid digit: " + (char) ch);
+            uc = uc * base + d;
+        }
+        if (i != length && exact)
+            throw new IllegalArgumentException("Invalid character length: " + i + ", should be: " + length);
+        return uc;
+    }
 
-static private Object interpretToken(String s) {
-	if(s.equals("nil"))
-		{
-		return null;
-		}
-	else if(s.equals("true"))
-		{
-		return RT.T;
-		}
-	else if(s.equals("false"))
-		{
-		return RT.F;
-		}
-	Object ret = null;
+    static private Object interpretToken(String s) {
+        if (s.equals("nil")) {
+            return null;
+        } else if (s.equals("true")) {
+            return RT.T;
+        } else if (s.equals("false")) {
+            return RT.F;
+        }
+        Object ret = null;
 
-	ret = matchSymbol(s);
-	if(ret != null)
-		return ret;
+        ret = matchSymbol(s);
+        if (ret != null)
+            return ret;
 
-	throw Util.runtimeException("Invalid token: " + s);
-}
+        throw Util.runtimeException("Invalid token: " + s);
+    }
 
 
-private static Object matchSymbol(String s){
-	Matcher m = symbolPat.matcher(s);
-	if(m.matches())
-		{
-		int gc = m.groupCount();
-		String ns = m.group(1);
-		String name = m.group(2);
-		if(ns != null && ns.endsWith(":/")
-		   || name.endsWith(":")
-		   || s.indexOf("::", 1) != -1)
-			return null;
-		if(s.startsWith("::"))
-			{
-			Symbol ks = Symbol.intern(s.substring(2));
-			Namespace kns;
-			if(ks.ns != null)
-				kns = Compiler.namespaceFor(ks);
-			else
-				kns = Compiler.currentNS();
-			//auto-resolving keyword
-			if (kns != null)
-				return Keyword.intern(kns.name.name,ks.name);
-			else
-				return null;
-			}
-		boolean isKeyword = s.charAt(0) == ':';
-		Symbol sym = Symbol.intern(s.substring(isKeyword ? 1 : 0));
-		if(isKeyword)
-			return Keyword.intern(sym);
-		return sym;
-		}
-	return null;
-}
+    private static Object matchSymbol(String s) {
+        Matcher m = symbolPat.matcher(s);
+        if (m.matches()) {
+            int gc = m.groupCount();
+            String ns = m.group(1);
+            String name = m.group(2);
+            if (ns != null && ns.endsWith(":/")
+                    || name.endsWith(":")
+                    || s.indexOf("::", 1) != -1)
+                return null;
+            if (s.startsWith("::")) {
+                Symbol ks = Symbol.intern(s.substring(2));
+                Namespace kns;
+                if (ks.ns != null)
+                    kns = Compiler.namespaceFor(ks);
+                else
+                    kns = Compiler.currentNS();
+                //auto-resolving keyword
+                if (kns != null)
+                    return Keyword.intern(kns.name.name, ks.name);
+                else
+                    return null;
+            }
+            boolean isKeyword = s.charAt(0) == ':';
+            Symbol sym = Symbol.intern(s.substring(isKeyword ? 1 : 0));
+            if (isKeyword)
+                return Keyword.intern(sym);
+            return sym;
+        }
+        return null;
+    }
 
 
-private static Object matchNumber(String s){
-	Matcher m = intPat.matcher(s);
-	if(m.matches())
-		{
-		if(m.group(2) != null)
-			{
-			if(m.group(8) != null)
-				return BigInt.ZERO;
-			return Numbers.num(0);
-			}
-		boolean negate = (m.group(1).equals("-"));
+    private static Object matchNumber(String s) {
+        Matcher m = intPat.matcher(s);
+        if (m.matches()) {
+            if (m.group(2) != null) {
+                if (m.group(8) != null)
+                    return BigInt.ZERO;
+                return Numbers.num(0);
+            }
+            boolean negate = (m.group(1).equals("-"));
 		String n;
 		int radix = 10;
 		if((n = m.group(3)) != null)

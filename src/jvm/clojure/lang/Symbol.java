@@ -18,46 +18,46 @@ import java.io.ObjectStreamException;
 
 public class Symbol extends AFn implements IObj, Comparable, Named, Serializable, IHashEq{
 //these must be interned strings!
-final String ns;
-final String name;
-final int hash;
-final IPersistentMap _meta;
-String _str;
+public final String         ns;
+public final String         name;
+final        int            hash;
+final        IPersistentMap _meta;
+    String _str;
 
-public String toString(){
-	if(_str == null){
-		if(ns != null)
-			_str = (ns + "/" + name).intern();
-		else
-			_str = name;
-	}
-	return _str;
-}
+    public String toString() {
+        if (_str == null) {
+            if (ns != null)
+                _str = (ns + "/" + name).intern();
+            else
+                _str = name;
+        }
+        return _str;
+    }
 
-public String getNamespace(){
-	return ns;
-}
+    public String getNamespace() {
+        return ns;
+    }
 
-public String getName(){
-	return name;
-}
+    public String getName() {
+        return name;
+    }
 
-// the create thunks preserve binary compatibility with code compiled
+    // the create thunks preserve binary compatibility with code compiled
 // against earlier version of Clojure and can be removed (at some point).
-static public Symbol create(String ns, String name) {
-    return Symbol.intern(ns, name);
-}
+    static public Symbol create(String ns, String name) {
+        return Symbol.intern(ns, name);
+    }
 
-static public Symbol create(String nsname) {
-    return Symbol.intern(nsname);
-}
-    
-static public Symbol intern(String ns, String name){
-	return new Symbol(ns == null ? null : ns.intern(), name.intern());
-}
+    static public Symbol create(String nsname) {
+        return Symbol.intern(nsname);
+    }
 
-static public Symbol intern(String nsname){
-	int i = nsname.indexOf('/');
+    static public Symbol intern(String ns, String name) {
+        return new Symbol(ns == null ? null : ns.intern(), name.intern());
+    }
+
+    static public Symbol intern(String nsname) {
+        int i = nsname.indexOf('/');
 	if(i == -1 || nsname.equals("/"))
 		return new Symbol(null, nsname.intern());
 	else

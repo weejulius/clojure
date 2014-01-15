@@ -14,7 +14,6 @@ package clojure.lang;
 
 import java.lang.ref.Reference;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.net.URLClassLoader;
 import java.net.URL;
