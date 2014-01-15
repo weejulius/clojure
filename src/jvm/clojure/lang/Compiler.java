@@ -121,7 +121,7 @@ public class Compiler implements Opcodes {
             LOOP, new LetExpr.Parser(),
             RECUR, new RecurExpr.Parser(),
             IF, new IfExpr.Parser(),
-            CASE, new CaseExpr.Parser(),
+            CASE, new Parser(),
             LET, new LetExpr.Parser(),
             LETFN, new LetFnExpr.Parser(),
             DO, new BodyExpr.Parser(),
@@ -316,6 +316,7 @@ public class Compiler implements Opcodes {
     //LocalBinding -> Set<LocalBindingExpr>
     static final public Var CLEAR_SITES = Var.create(null).setDynamic();
 
+    //TODO what is the different
     public enum C {
         STATEMENT,
         //value ignored

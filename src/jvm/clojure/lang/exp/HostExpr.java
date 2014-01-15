@@ -156,7 +156,8 @@ public abstract class HostExpr implements Expr, MaybePrimitiveExpr {
             ISeq form = (ISeq) frm;
 
             if (RT.length(form) < 3)
-                throw new IllegalArgumentException("Malformed member expression, expecting (. target member ...)");
+                throw new IllegalArgumentException("Malformed member expression, expecting (. target member ...) but " +
+                                                   form.toString());
             //determine static or instance
             //static target must be symbol, either fully.qualified.Classname or Classname that has been imported
             int line = Compiler.lineDeref();

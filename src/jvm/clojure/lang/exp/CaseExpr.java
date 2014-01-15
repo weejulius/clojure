@@ -1,10 +1,12 @@
 package clojure.lang.exp;
 
-import clojure.lang.*;
 import clojure.lang.Compiler;
 import clojure.lang.Compiler.C;
-import clojure.lang.Compiler.PATHTYPE;
-import clojure.lang.Compiler.PathNode;
+import clojure.lang.Expr;
+import clojure.lang.Keyword;
+import clojure.lang.Numbers;
+import clojure.lang.RT;
+import clojure.lang.Util;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
@@ -14,15 +16,17 @@ import org.objectweb.asm.commons.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 /**
-* Created by jyu on 14-1-15.
-*/
+ *
+ *
+ * Created by jyu on 14-1-15.
+ */
 public class CaseExpr implements Expr, MaybePrimitiveExpr {
+
     public final LocalBindingExpr expr;
     public final int              shift, mask, low, high;
     public final Expr                     defaultExpr;
@@ -83,9 +87,9 @@ public class CaseExpr implements Expr, MaybePrimitiveExpr {
         this.returnType = Compiler.maybeJavaClass(returns);
         if (RT.count(skipCheck) > 0 && RT.booleanCast(RT.WARN_ON_REFLECTION.deref())) {
             RT.errPrintWriter()
-                    .format("Performance warning, %s:%d:%d - hash collision of some case test constants; if " +
-                                    "selected, those entries will be tested sequentially.\n",
-                            Compiler.SOURCE_PATH.deref(), line, column);
+              .format("Performance warning, %s:%d:%d - hash collision of some case test constants; if " +
+                      "selected, those entries will be tested sequentially.\n",
+                      Compiler.SOURCE_PATH.deref(), line, column);
         }
     }
 
@@ -180,9 +184,9 @@ public class CaseExpr implements Expr, MaybePrimitiveExpr {
         if (exprType == null) {
             if (RT.booleanCast(RT.WARN_ON_REFLECTION.deref())) {
                 RT.errPrintWriter()
-                        .format("Performance warning, %s:%d:%d - case has int tests, but tested expression is not " +
-                                        "primitive.\n",
-                                Compiler.SOURCE_PATH.deref(), line, column);
+                  .format("Performance warning, %s:%d:%d - case has int tests, but tested expression is not " +
+                          "primitive.\n",
+                          Compiler.SOURCE_PATH.deref(), line, column);
             }
             expr.emit(C.EXPRESSION, objx, gen);
             gen.instanceOf(NUMBER_TYPE);
@@ -192,9 +196,9 @@ public class CaseExpr implements Expr, MaybePrimitiveExpr {
             gen.invokeVirtual(NUMBER_TYPE, intValueMethod);
             emitShiftMask(gen);
         } else if (exprType == Type.LONG_TYPE
-                || exprType == Type.INT_TYPE
-                || exprType == Type.SHORT_TYPE
-                || exprType == Type.BYTE_TYPE) {
+                   || exprType == Type.INT_TYPE
+                   || exprType == Type.SHORT_TYPE
+                   || exprType == Type.BYTE_TYPE) {
             expr.emitUnboxed(C.EXPRESSION, objx, gen);
             gen.cast(exprType, Type.INT_TYPE);
             emitShiftMask(gen);
@@ -222,8 +226,8 @@ public class CaseExpr implements Expr, MaybePrimitiveExpr {
             gen.ifCmp(Type.LONG_TYPE, GeneratorAdapter.NE, defaultLabel);
             emitExpr(objx, gen, then, emitUnboxed);
         } else if (exprType == Type.INT_TYPE
-                || exprType == Type.SHORT_TYPE
-                || exprType == Type.BYTE_TYPE) {
+                   || exprType == Type.SHORT_TYPE
+                   || exprType == Type.BYTE_TYPE) {
             if (isShiftMasked()) {
                 ((NumberExpr) test).emitUnboxed(C.EXPRESSION, objx, gen);
                 expr.emitUnboxed(C.EXPRESSION, objx, gen);
@@ -268,71 +272,4 @@ public class CaseExpr implements Expr, MaybePrimitiveExpr {
     }
 
 
-    public static class Parser implements IParser {
-        //(case* expr shift mask default map<minhash, [test then]> table-type test-type skip-check?)
-        //prepared by case macro and presumed correct
-        //case macro binds actual expr in let so expr is always a local,
-        //no need to worry about multiple evaluation
-        public Expr parse(C context, Object frm) {
-            ISeq form = (ISeq) frm;
-            if (context == C.EVAL)
-                return Compiler.analyze(context, RT.list(RT.list(Compiler.FNONCE, PersistentVector.EMPTY, form)));
-            PersistentVector args = PersistentVector.create(form.next());
-
-            Object exprForm = args.nth(0);
-            int shift = ((Number) args.nth(1)).intValue();
-            int mask = ((Number) args.nth(2)).intValue();
-            Object defaultForm = args.nth(3);
-            Map caseMap = (Map) args.nth(4);
-            Keyword switchType = ((Keyword) args.nth(5));
-            Keyword testType = ((Keyword) args.nth(6));
-            Set skipCheck = RT.count(args) < 8 ? null : (Set) args.nth(7);
-
-            ISeq keys = RT.keys(caseMap);
-            int low = ((Number) RT.first(keys)).intValue();
-            int high = ((Number) RT.nth(keys, RT.count(keys) - 1)).intValue();
-
-            LocalBindingExpr testexpr = (LocalBindingExpr) Compiler.analyze(C.EXPRESSION, exprForm);
-            testexpr.shouldClear = false;
-
-            SortedMap<Integer, Expr> tests = new TreeMap();
-            HashMap<Integer, Expr> thens = new HashMap();
-
-            PathNode branch = new PathNode(PATHTYPE.BRANCH, (PathNode) Compiler.CLEAR_PATH.get());
-
-            for (Object o : caseMap.entrySet()) {
-                Map.Entry e = (Map.Entry) o;
-                Integer minhash = ((Number) e.getKey()).intValue();
-                Object pair = e.getValue(); // [test-val then-expr]
-                Expr testExpr = testType == intKey
-                        ? NumberExpr.parse(((Number) RT.first(pair)).intValue())
-                        : new ConstantExpr(RT.first(pair));
-                tests.put(minhash, testExpr);
-
-                Expr thenExpr;
-                try {
-                    Var.pushThreadBindings(
-                            RT.map(Compiler.CLEAR_PATH, new PathNode(PATHTYPE.PATH, branch)));
-                    thenExpr = Compiler.analyze(context, RT.second(pair));
-                } finally {
-                    Var.popThreadBindings();
-                }
-                thens.put(minhash, thenExpr);
-            }
-
-            Expr defaultExpr;
-            try {
-                Var.pushThreadBindings(
-                        RT.map(Compiler.CLEAR_PATH, new PathNode(PATHTYPE.PATH, branch)));
-                defaultExpr = Compiler.analyze(context, args.nth(3));
-            } finally {
-                Var.popThreadBindings();
-            }
-
-            int line = ((Number) Compiler.LINE.deref()).intValue();
-            int column = ((Number) Compiler.COLUMN.deref()).intValue();
-            return new CaseExpr(line, column, testexpr, shift, mask, low, high,
-                                defaultExpr, tests, thens, switchType, testType, skipCheck);
-        }
-    }
 }

@@ -1,13 +1,23 @@
 package clojure.lang.exp;
 
-import clojure.lang.*;
 import clojure.lang.Compiler;
 import clojure.lang.Compiler.C;
+import clojure.lang.Expr;
+import clojure.lang.IParser;
+import clojure.lang.ISeq;
+import clojure.lang.PersistentVector;
+import clojure.lang.RT;
+import clojure.lang.Util;
 import org.objectweb.asm.commons.GeneratorAdapter;
 
 /**
-* Created by jyu on 14-1-15.
-*/
+ *
+ * the form likes
+ *
+ *  (op arg1 arg2)
+ *
+ * Created by jyu on 14-1-15.
+ */
 public class BodyExpr implements Expr, MaybePrimitiveExpr {
     PersistentVector exprs;
 
@@ -28,8 +38,7 @@ public class BodyExpr implements Expr, MaybePrimitiveExpr {
             for (; forms != null; forms = forms.next()) {
                 Expr e = (context != C.EVAL &&
                         (context == C.STATEMENT || forms.next() != null)) ?
-                        Compiler.analyze(C.STATEMENT, forms.first())
-                        :
+                        Compiler.analyze(C.STATEMENT, forms.first()) :
                         Compiler.analyze(context, forms.first());
                 exprs = exprs.cons(e);
             }
@@ -39,6 +48,7 @@ public class BodyExpr implements Expr, MaybePrimitiveExpr {
         }
     }
 
+    //return the last value
     public Object eval() {
         Object ret = null;
         for (Object o : exprs) {
